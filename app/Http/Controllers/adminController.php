@@ -10,4 +10,6 @@ class adminController extends Controller
     {
         return view('dashboard');
     }
+
+
 }
