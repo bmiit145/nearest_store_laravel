@@ -9,11 +9,12 @@ class homeController extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        return view('home');
     }
 
     public function findNearestStore(Request $request)
     {
+
         // validate request
         $request->validate([
             'latitute' => 'required | numeric | between:-90,90',
@@ -41,10 +42,12 @@ class homeController extends Controller
             ->whereRaw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) <= ?', [$userLatitude, $userLongitude, $userLatitude, $distanceInKm])
             ->orderBy('distance')
             ->get();
+
+        $count = $stores->count();
 if ($stores->count() == 0) {
     return response()->json(['error' => 'No stores found'] , 404);
 }
-        return response()->json(['stores' => $stores]);
+        return response()->json(['stores' => $stores , 'message' => "$count Store Found within 10 KMs"] , 200);
     }
 
 }
